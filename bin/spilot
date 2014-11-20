@@ -1,0 +1,72 @@
+#!/usr/bin/env node
+'use strict';
+
+process.bin = process.title = 'spilot';
+
+var pkg = require('../package.json');
+var program = require('commander');
+var _ = require('lodash');
+var colors = require('colors');
+var Table = require('easy-table');
+
+var Spilot = require('../lib/spilot')(program);
+
+var stdin = '';
+
+program
+  .version(pkg.version)
+  .option('-i, --id <id>', 'Client id [required]')
+  .option('-k, --key <key>', 'Client key [required]');
+
+program
+  .command('auth:save <client_id> <client_key>')
+  .description('Save authentication')
+  .action(function(client_id, client_key) {
+  });
+
+program
+  .command('server')
+  .description('')
+  .action(function() {});
+
+program
+  .command('server:list')
+  .description('')
+  .action(function() {
+    Spilot(function() {
+      this.server().get(function(data) {
+        var t = new Table();
+
+        data.forEach(function (server) {
+          t.cell('Id', server.id);
+          t.cell('Name', server.name);
+          t.cell('IP Address', server.lastaddress);
+          t.cell('Last Connected', new Date(server.lastconn * 1000).toISOString());
+          t.cell('Firewall On', server.firewall);
+          t.cell('Autoupdate On', server.autoupdates);
+          t.cell('Created Date', new Date(server.datecreated * 1000).toISOString());
+          t.newRow();
+        });
+
+        process.stdout.write(t.printTransposed());
+      });
+    });
+  });
+
+// Handle piping
+if(process.stdin.isTTY) {
+  program.parse(process.argv);
+}
+else {
+  process.stdin.on('readable', function() {
+      var chunk = this.read();
+      if(chunk !== null) {
+         stdin += chunk;
+      }
+  });
+  process.stdin.on('end', function() {
+    program.parse(process.argv); 
+  });
+}
+
+if(!process.argv.slice(2).length) program.help();

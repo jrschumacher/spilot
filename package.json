@@ -1,0 +1,37 @@
+{
+  "name": "spilot",
+  "version": "0.0.1",
+  "description": "ServerPilot CLI",
+  "author": {
+    "name": "Ryan Schumacher",
+    "email": "ryan@38pages.com",
+    "url": "https://github.com/jrschumacher"
+  },
+  "license": "MIT",
+  "keywords": [
+    "serverpilot"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jrschumacher/spilot"
+  },
+  "main": "lib/spilot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cli-table": "^0.3.1",
+    "colors": "^1.0.3",
+    "commander": "^2.5.0",
+    "easy-table": "^0.3.0",
+    "lodash": "^2.4.1",
+    "request": "^2.48.0"
+  },
+  "bin": {
+    "spilot": "bin/spilot"
+  },
+  "files": [
+    "lib"
+  ],
+  "preferGlobal": "true"
+}
