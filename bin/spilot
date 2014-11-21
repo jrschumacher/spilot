@@ -24,17 +24,16 @@ program
   .action(function(client_id, client_key) {
   });
 
-program
-  .command('server')
-  .description('')
-  .action(function() {});
+// -- Server
 
 program
-  .command('server:list')
-  .description('')
+  .command('server')
+  .description('Get list of servers')
   .action(function() {
     Spilot(function() {
       this.server().get(function(data) {
+        process.stdout.write('=== Servers: ' + data.length + "\n\n");
+
         var t = new Table();
 
         data.forEach(function (server) {
@@ -48,10 +47,236 @@ program
           t.newRow();
         });
 
+        process.stdout.write(t.toString());
+      });
+    });
+  });
+
+program
+  .command('server:info <id>')
+  .description('Get one server info')
+  .action(function(id) {
+    Spilot(function() {
+      this.server(id).get(function(server) {
+        process.stdout.write('=== Server: ' + server.name + "\n\n");
+
+        var t = new Table();
+
+        t.cell('Id', server.id);
+        t.cell('Name', server.name);
+        t.cell('IP Address', server.lastaddress);
+        t.cell('Last Connected', new Date(server.lastconn * 1000).toISOString());
+        t.cell('Firewall On', server.firewall);
+        t.cell('Autoupdate On', server.autoupdates);
+        t.cell('Created Date', new Date(server.datecreated * 1000).toISOString());
+        t.newRow();
+
         process.stdout.write(t.printTransposed());
       });
     });
   });
+
+// -- Sysuser
+
+program
+  .command('sysuser')
+  .description('Get list of sysusers')
+  .action(function() {
+    Spilot(function() {
+      this.sysuser().get(function(data) {
+        process.stdout.write('=== Sysusers: ' + data.length + "\n\n");
+
+        var t = new Table();
+
+        data.forEach(function (sysuser) {
+          t.cell('Id', sysuser.id);
+          t.cell('Name', sysuser.name);
+          t.cell('Server Id', sysuser.serverid);
+          t.newRow();
+        });
+
+        process.stdout.write(t.toString());
+      });
+    });
+  });
+
+program
+  .command('sysuser:info <id>')
+  .description('Get one sysuser info')
+  .action(function(id) {
+    Spilot(function() {
+      this.sysuser(id).get(function(sysuser) {
+        process.stdout.write('=== Sysuser: ' + sysuser.name + "\n\n");
+
+        var t = new Table();
+
+        t.cell('Id', sysuser.id);
+        t.cell('Name', sysuser.name);
+        t.cell('Server Id', sysuser.serverid);
+        t.newRow();
+
+        process.stdout.write(t.printTransposed());
+      });
+    });
+  });
+
+// -- Apps
+
+program
+  .command('app')
+  .description('Get list of apps')
+  .action(function() {
+    Spilot(function() {
+      this.app().get(function(data) {
+        process.stdout.write('=== Apps: ' + data.length + "\n\n");
+
+        var t = new Table();
+
+        data.forEach(function (app) {
+          t.cell('Id', app.id);
+          t.cell('Name', app.name);
+          t.cell('Server Id', app.serverid);
+          t.cell('Sysuser Id', app.sysuserid);
+          t.cell('Runtime', app.runtime);
+          t.cell('Domains', app.domains);
+          t.cell('SSL', app.ssl ? app.ssl : false);
+          t.newRow();
+        });
+
+        process.stdout.write(t.toString());
+      });
+    });
+  });
+
+program
+  .command('app:info <id>')
+  .description('Get one app info')
+  .action(function(id) {
+    Spilot(function() {
+      this.app(id).get(function(app) {
+        process.stdout.write('=== App: ' + app.name + "\n\n");
+
+        var t = new Table();
+
+        t.cell('Id', app.id);
+        t.cell('Name', app.name);
+        t.cell('Server Id', app.serverid);
+        t.cell('Sysuser Id', app.sysuserid);
+        t.cell('Runtime', app.runtime);
+        t.cell('Domains', app.domains);
+        t.cell('SSL', app.ssl ? app.ssl : false);
+        t.newRow();
+
+        process.stdout.write(t.printTransposed());
+      });
+    });
+  });
+
+// -- DBs
+
+program
+  .command('db')
+  .description('Get list of dbs')
+  .action(function() {
+    Spilot(function() {
+      this.db().get(function(data) {
+        process.stdout.write('=== DBs: ' + data.length + "\n\n");
+
+        var t = new Table();
+
+        data.forEach(function (db) {
+          t.cell('Id', db.id);
+          t.cell('Name', db.name);
+          t.cell('Server Id', db.serverid);
+          t.cell('App Id', db.appid);
+          t.cell('User Id', db.user.id);
+          t.cell('User Name', db.user.name);
+          t.newRow();
+        });
+
+        process.stdout.write(t.toString());
+      });
+    });
+  });
+
+program
+  .command('db:info <id>')
+  .description('Get one db info')
+  .action(function(id) {
+    Spilot(function() {
+      this.db(id).get(function(db) {
+        process.stdout.write('=== DB: ' + db.name + "\n\n");
+
+        var t = new Table();
+
+        t.cell('Id', db.id);
+        t.cell('Name', db.name);
+        t.cell('Server Id', db.serverid);
+        t.cell('App Id', db.appid);
+        t.cell('User Id', db.user.id);
+        t.cell('User Name', db.user.name);
+        t.newRow();
+
+        process.stdout.write(t.printTransposed());
+      });
+    });
+  });
+
+// -- Actions
+
+program
+  .command('action')
+  .description('Get list of actions')
+  .action(function() {
+    Spilot(function() {
+
+      process.stderr.write('This endpoint doesn\'t exist' + "\n");
+      return;
+
+      this.action().get(function(data) {
+        process.stdout.write('=== Actions: ' + data.length + "\n\n");
+
+        var t = new Table();
+
+        data.forEach(function (action) {
+          t.cell('Id', action.id);
+          t.cell('Name', action.name);
+          t.cell('Server Id', action.serverid);
+          t.cell('App Id', action.appid);
+          t.cell('User Id', action.user.id);
+          t.cell('User Name', action.user.name);
+          t.newRow();
+        });
+
+        process.stdout.write(t.toString());
+      });
+    });
+  });
+
+program
+  .command('action:info <id>')
+  .description('Get one action info')
+  .action(function(id) {
+    Spilot(function() {
+      this.action(id).get(function(action) {
+        process.stdout.write('=== Action: ' + action.name + "\n\n");
+
+        var t = new Table();
+
+        t.cell('Id', action.id);
+        t.cell('Name', action.name);
+        t.cell('Server Id', action.serverid);
+        t.cell('App Id', action.appid);
+        t.cell('User Id', action.user.id);
+        t.cell('User Name', action.user.name);
+        t.newRow();
+
+        process.stdout.write(t.printTransposed());
+      });
+    });
+  });
+
+
 
 // Handle piping
 if(process.stdin.isTTY) {
